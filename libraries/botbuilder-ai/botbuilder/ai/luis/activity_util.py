@@ -46,12 +46,13 @@ class ActivityUtil(object):
         if value_type is None and value is not None:
             value_type = type(value).__name__
 
-        reply = Activity(
+        return Activity(
             type=ActivityTypes.trace,
             timestamp=datetime.utcnow(),
             from_property=from_property,
             recipient=ChannelAccount(
-                id=turn_activity.from_property.id, name=turn_activity.from_property.name
+                id=turn_activity.from_property.id,
+                name=turn_activity.from_property.name,
             ),
             reply_to_id=turn_activity.id,
             service_url=turn_activity.service_url,
@@ -66,4 +67,3 @@ class ActivityUtil(object):
             value_type=value_type,
             value=value,
         )
-        return reply

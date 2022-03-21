@@ -45,8 +45,7 @@ class JwtTokenValidation:
         using_emulator = EmulatorValidation.is_token_from_emulator(auth_header)
         if using_emulator:
             return await EmulatorValidation.authenticate_emulator_token(auth_header, credentials, channel_id)
+        if service_url:
+            return await ChannelValidation.authenticate_token_service_url(auth_header, credentials, service_url, channel_id)
         else:
-            if service_url:
-                return await ChannelValidation.authenticate_token_service_url(auth_header, credentials, service_url, channel_id)
-            else:
-                return await ChannelValidation.authenticate_token(auth_header, credentials, channel_id)
+            return await ChannelValidation.authenticate_token(auth_header, credentials, channel_id)

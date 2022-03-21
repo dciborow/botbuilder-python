@@ -13,6 +13,4 @@ class TestUtilities:
             conversation = ConversationAccount(id= 'test' ),
             from_property = ChannelAccount(id= 'empty@empty.context.org')
         )
-        bc = TurnContext(b, a)
-
-        return bc
+        return TurnContext(b, a)

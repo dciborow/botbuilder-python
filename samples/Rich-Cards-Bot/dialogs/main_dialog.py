@@ -67,19 +67,15 @@ class MainDialog(ComponentDialog):
                         self.create_receipt_card, self.create_signin_card, self.create_thumbnail_card, self.create_video_card]
         }
 
-        # Get the functions that will generate the card(s) for our response
-        # If the stripped response from the user is not found in our choice_dict, default to None
-        choice = choice_dict.get(response, None)
-        # If the user's choice was not found, respond saying the bot didn't understand the user's response.
-        if not choice:
-            not_found = create_activity_reply(step_context.context.activity, 'Sorry, I didn\'t understand that. :(')
-            await step_context.context.send_activity(not_found)
-        else:
+        if choice := choice_dict.get(response):
             for func in choice:
                 card = func()
                 response = create_activity_reply(step_context.context.activity, '', '', [card])
                 await step_context.context.send_activity(response)
 
+        else:
+            not_found = create_activity_reply(step_context.context.activity, 'Sorry, I didn\'t understand that. :(')
+            await step_context.context.send_activity(not_found)
         # Give the user instructions about what to do next
         await step_context.context.send_activity('Type anything to see another card.')
 

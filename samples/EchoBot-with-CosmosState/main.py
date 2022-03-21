@@ -44,9 +44,7 @@ async def create_reply_activity(request_activity, text) -> Activity:
 async def handle_message(context: TurnContext) -> web.Response:
     # Access the state for the conversation between the user and the bot.
     state = await conversation_state.get(context)
-    previous = None
-    if hasattr(state, 'previous_text'):
-        previous = state.previous_text
+    previous = state.previous_text if hasattr(state, 'previous_text') else None
     if hasattr(state, 'counter'):
         state.counter += 1
     else:

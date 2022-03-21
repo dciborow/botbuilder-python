@@ -122,7 +122,7 @@ class bdist_wheel(Command):
         self.owner = None
         self.group = None
         self.universal = False
-        self.python_tag = 'py' + get_impl_ver()[0]
+        self.python_tag = f'py{get_impl_ver()[0]}'
         self.plat_name_supplied = False
 
     def finalize_options(self):
@@ -130,7 +130,7 @@ class bdist_wheel(Command):
             bdist_base = self.get_finalized_command('bdist').bdist_base
             self.bdist_dir = os.path.join(bdist_base, 'wheel')
 
-        self.data_dir = self.wheel_dist_name + '.data'
+        self.data_dir = f'{self.wheel_dist_name}.data'
         self.plat_name_supplied = self.plat_name is not None
 
         need_options = ('dist_dir', 'plat_name', 'skip_build')
@@ -170,10 +170,7 @@ class bdist_wheel(Command):
 
 
         if self.root_is_pure:
-            if self.universal:
-                impl = 'py2.py3'
-            else:
-                impl = self.python_tag
+            impl = 'py2.py3' if self.universal else self.python_tag
             tag = (impl, 'none', plat_name)
         else:
             impl_name = get_abbr_impl()
@@ -184,7 +181,7 @@ class bdist_wheel(Command):
             supported_tags = pep425tags.get_supported(
                 supplied_platform=plat_name if self.plat_name_supplied else None)
             # XXX switch to this alternate implementation for non-pure:
-            assert tag == supported_tags[0], "%s != %s" % (tag, supported_tags[0])
+            assert tag == supported_tags[0], f"{tag} != {supported_tags[0]}"
         return tag
 
     def get_archive_basename(self):
@@ -192,12 +189,7 @@ class bdist_wheel(Command):
 
         impl_tag, abi_tag, plat_tag = self.get_tag()
 
-        archive_basename = "%s-%s-%s-%s" % (
-            self.wheel_dist_name,
-            impl_tag,
-            abi_tag,
-            plat_tag)
-        return archive_basename
+        return f"{self.wheel_dist_name}-{impl_tag}-{abi_tag}-{plat_tag}"
 
     def run(self):
         build_scripts = self.reinitialize_command('build_scripts')
@@ -222,9 +214,7 @@ class bdist_wheel(Command):
         # Use a custom scheme for the archive, because we have to decide
         # at installation time which scheme to use.
         for key in ('headers', 'scripts', 'data', 'purelib', 'platlib'):
-            setattr(install,
-                    'install_' + key,
-                    os.path.join(self.data_dir, key))
+            setattr(install, f'install_{key}', os.path.join(self.data_dir, key))
 
         basedir_observed = ''
 
@@ -245,17 +235,20 @@ class bdist_wheel(Command):
         archive_basename = self.get_archive_basename()
 
         pseudoinstall_root = os.path.join(self.dist_dir, archive_basename)
-        if not self.relative:
-            archive_root = self.bdist_dir
-        else:
-            archive_root = os.path.join(
-                self.bdist_dir,
-                self._ensure_relative(install.install_base))
+        archive_root = (
+            os.path.join(
+                self.bdist_dir, self._ensure_relative(install.install_base)
+            )
+            if self.relative
+            else self.bdist_dir
+        )
 
         self.set_undefined_options(
             'install_egg_info', ('target', 'egginfo_dir'))
-        self.distinfo_dir = os.path.join(self.bdist_dir,
-                                         '%s.dist-info' % self.wheel_dist_name)
+        self.distinfo_dir = os.path.join(
+            self.bdist_dir, f'{self.wheel_dist_name}.dist-info'
+        )
+
         self.egg2dist(self.egginfo_dir,
                       self.distinfo_dir)
 
@@ -304,7 +297,7 @@ class bdist_wheel(Command):
     def _ensure_relative(self, path):
         # copied from dir_util, deleted
         drive, path = os.path.splitdrive(path)
-        if path[0:1] == os.sep:
+        if path[:1] == os.sep:
             path = drive + path[1:]
         return path
 
@@ -314,7 +307,7 @@ class bdist_wheel(Command):
     def license_file(self):
         """Return license filename from a license-file key in setup.cfg, or None."""
         metadata = self.distribution.get_option_dict('metadata')
-        if not 'license_file' in metadata:
+        if 'license_file' not in metadata:
             return None
         return metadata['license_file'][1]
 
@@ -343,7 +336,7 @@ class bdist_wheel(Command):
         # our .ini parser folds - to _ in key names:
         for key, title in (('provides_extra', 'Provides-Extra'),
                            ('requires_dist', 'Requires-Dist')):
-            if not key in metadata:
+            if key not in metadata:
                 continue
             field = metadata[key]
             for line in field[1].splitlines():
@@ -369,10 +362,11 @@ class bdist_wheel(Command):
         """Convert an .egg-info directory into a .dist-info directory"""
         def adios(p):
             """Appropriately delete directory, file or link."""
-            if os.path.exists(p) and not os.path.islink(p) and os.path.isdir(p):
-                shutil.rmtree(p)
-            elif os.path.exists(p):
-                os.unlink(p)
+            if os.path.exists(p):
+                if not os.path.islink(p) and os.path.isdir(p):
+                    shutil.rmtree(p)
+                else:
+                    os.unlink(p)
 
         adios(distinfo_path)
 
@@ -512,21 +506,28 @@ class azure_bdist_wheel(bdist_wheel):
         if not self.distribution.install_requires:
             self.distribution.install_requires = []
         self.distribution.install_requires.append(
-            "{}>=2.0.0".format(self.azure_namespace_package))
+            f"{self.azure_namespace_package}>=2.0.0"
+        )
+
         bdist_wheel.run(self)
 
     def write_record(self, bdist_dir, distinfo_dir):
         if self.azure_namespace_package:
             # Split and remove last part, assuming it's "nspkg"
-            subparts = self.azure_namespace_package.split('-')[0:-1]
-        folder_with_init = [os.path.join(*subparts[0:i+1]) for i in range(len(subparts))]
+            subparts = self.azure_namespace_package.split('-')[:-1]
+        folder_with_init = [
+            os.path.join(*subparts[: i + 1]) for i in range(len(subparts))
+        ]
+
         for azure_sub_package in folder_with_init:
             init_file = os.path.join(bdist_dir, azure_sub_package, '__init__.py')
-            if os.path.isfile(init_file):
-                logger.info("manually remove {} while building the wheel".format(init_file))
-                os.remove(init_file)
-            else:
-                raise ValueError("Unable to find {}. Are you sure of your namespace package?".format(init_file))
+            if not os.path.isfile(init_file):
+                raise ValueError(
+                    f"Unable to find {init_file}. Are you sure of your namespace package?"
+                )
+
+            logger.info(f"manually remove {init_file} while building the wheel")
+            os.remove(init_file)
         bdist_wheel.write_record(self, bdist_dir, distinfo_dir)
 cmdclass = {
     'bdist_wheel': azure_bdist_wheel,

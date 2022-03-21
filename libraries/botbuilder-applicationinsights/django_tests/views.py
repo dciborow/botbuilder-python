@@ -44,9 +44,9 @@ def echoer(request):
 def getid(request, id):
     return HttpResponse(str(id))
 
-@api_view(['POST']) 
+@api_view(['POST'])
 def returncode(request, id):
-    return HttpResponse("Status code set to %s" % id, status=int(id))
+    return HttpResponse(f"Status code set to {id}", status=int(id))
 
 @api_view(['POST']) 
 def templater(request, data):

@@ -40,7 +40,4 @@ class UserState(BotState):
         channel_id = getattr(activity, 'channel_id', None)
         user_id = getattr(activity.from_property, 'id', None) if hasattr(activity, 'from_property') else None
 
-        storage_key = None
-        if channel_id and user_id:
-            storage_key = "%s/users/%s" % (channel_id, user_id)
-        return storage_key
+        return f"{channel_id}/users/{user_id}" if channel_id and user_id else None

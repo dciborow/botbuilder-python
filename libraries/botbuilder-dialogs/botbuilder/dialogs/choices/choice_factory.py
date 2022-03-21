@@ -80,8 +80,7 @@ class ChoiceFactory:
 
         # Format list of choices
         connector = ""
-        txt_builder: List[str] = [text]
-        txt_builder.append(" ")
+        txt_builder: List[str] = [text, " "]
         for index, choice in enumerate(choices):
             title = (
                 choice.action.title
@@ -90,10 +89,7 @@ class ChoiceFactory:
             )
             txt_builder.append(connector)
             if opt.include_numbers is True:
-                txt_builder.append("(")
-                txt_builder.append(f"{index + 1}")
-                txt_builder.append(") ")
-
+                txt_builder.extend(("(", f"{index + 1}", ") "))
             txt_builder.append(title)
             if index == (len(choices) - 2):
                 connector = opt.inline_or if index == 0 else opt.inline_or_more
@@ -125,9 +121,7 @@ class ChoiceFactory:
 
         # Format list of choices
         connector = ""
-        txt_builder = [text]
-        txt_builder.append("\n\n   ")
-
+        txt_builder = [text, "\n\n   "]
         for index, choice in enumerate(choices):
             title = (
                 choice.action.title
@@ -137,8 +131,7 @@ class ChoiceFactory:
 
             txt_builder.append(connector)
             if include_numbers:
-                txt_builder.append(f"{index + 1}")
-                txt_builder.append(". ")
+                txt_builder.extend((f"{index + 1}", ". "))
             else:
                 txt_builder.append("- ")
 

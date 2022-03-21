@@ -21,12 +21,11 @@ class TextPrompt(Prompt):
             raise TypeError('TextPrompt.on_prompt(): turn_context cannot be None.')
         if not options:
             raise TypeError('TextPrompt.on_prompt(): options cannot be None.')
-        
-        if is_retry == True and options.retry_prompt != None:
-            await turn_context.send_activity(options.retry_prompt)  
-        else:
-            if options.prompt != None:
-                await turn_context.send_activity(options.prompt)
+
+        if is_retry and options.retry_prompt != None:
+            await turn_context.send_activity(options.retry_prompt)
+        elif options.prompt != None:
+            await turn_context.send_activity(options.prompt)
 
 
     async def on_recognize(self, turn_context: TurnContext, state: Dict[str, object], options: PromptOptions) -> PromptRecognizerResult:

@@ -73,10 +73,9 @@ class ConversationsOperations:
         query_parameters = {}
         if continuation_token is not None:
             query_parameters['continuationToken'] = self._serialize.query("continuation_token", continuation_token, 'str')
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters = {'Accept': 'application/json'}
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -92,8 +91,7 @@ class ConversationsOperations:
             deserialized = self._deserialize('ConversationsResult', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     get_conversations.metadata = {'url': '/v3/conversations'}
@@ -142,9 +140,11 @@ class ConversationsOperations:
         query_parameters = {}
 
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
+        }
+
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -167,8 +167,7 @@ class ConversationsOperations:
             deserialized = self._deserialize('ConversationResourceResponse', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     create_conversation.metadata = {'url': '/v3/conversations'}
@@ -215,11 +214,13 @@ class ConversationsOperations:
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
+        }
+
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -242,8 +243,7 @@ class ConversationsOperations:
             deserialized = self._deserialize('ResourceResponse', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     send_to_conversation.metadata = {'url': '/v3/conversations/{conversationId}/activities'}
@@ -286,11 +286,13 @@ class ConversationsOperations:
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
+        }
+
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -313,8 +315,7 @@ class ConversationsOperations:
             deserialized = self._deserialize('ResourceResponse', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     send_conversation_history.metadata = {'url': '/v3/conversations/{conversationId}/activities/history'}
@@ -356,11 +357,13 @@ class ConversationsOperations:
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
+        }
+
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -383,8 +386,7 @@ class ConversationsOperations:
             deserialized = self._deserialize('ResourceResponse', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     update_activity.metadata = {'url': '/v3/conversations/{conversationId}/activities/{activityId}'}
@@ -433,11 +435,13 @@ class ConversationsOperations:
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
+        }
+
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -460,8 +464,7 @@ class ConversationsOperations:
             deserialized = self._deserialize('ResourceResponse', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     reply_to_activity.metadata = {'url': '/v3/conversations/{conversationId}/activities/{activityId}'}
@@ -498,7 +501,7 @@ class ConversationsOperations:
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
         header_parameters = {}
         if custom_headers:
@@ -512,8 +515,7 @@ class ConversationsOperations:
             raise models.ErrorResponseException(self._deserialize, response)
 
         if raw:
-            client_raw_response = ClientRawResponse(None, response)
-            return client_raw_response
+            return ClientRawResponse(None, response)
     delete_activity.metadata = {'url': '/v3/conversations/{conversationId}/activities/{activityId}'}
 
     async def get_conversation_members(
@@ -546,10 +548,9 @@ class ConversationsOperations:
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters = {'Accept': 'application/json'}
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -565,8 +566,7 @@ class ConversationsOperations:
             deserialized = self._deserialize('[ChannelAccount]', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     get_conversation_members.metadata = {'url': '/v3/conversations/{conversationId}/members'}
@@ -620,10 +620,9 @@ class ConversationsOperations:
             query_parameters['pageSize'] = self._serialize.query("page_size", page_size, 'int')
         if continuation_token is not None:
             query_parameters['continuationToken'] = self._serialize.query("continuation_token", continuation_token, 'str')
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters = {'Accept': 'application/json'}
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -639,8 +638,7 @@ class ConversationsOperations:
             deserialized = self._deserialize('PagedMembersResult', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     get_conversation_paged_members.metadata = {'url': '/v3/conversations/{conversationId}/pagedmembers'}
@@ -679,7 +677,7 @@ class ConversationsOperations:
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
         header_parameters = {}
         if custom_headers:
@@ -693,8 +691,7 @@ class ConversationsOperations:
             raise models.ErrorResponseException(self._deserialize, response)
 
         if raw:
-            client_raw_response = ClientRawResponse(None, response)
-            return client_raw_response
+            return ClientRawResponse(None, response)
     delete_conversation_member.metadata = {'url': '/v3/conversations/{conversationId}/members/{memberId}'}
 
     async def get_activity_members(
@@ -731,10 +728,9 @@ class ConversationsOperations:
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters = {'Accept': 'application/json'}
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -750,8 +746,7 @@ class ConversationsOperations:
             deserialized = self._deserialize('[ChannelAccount]', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     get_activity_members.metadata = {'url': '/v3/conversations/{conversationId}/activities/{activityId}/members'}
@@ -790,11 +785,13 @@ class ConversationsOperations:
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
+        }
+
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -817,8 +814,7 @@ class ConversationsOperations:
             deserialized = self._deserialize('ResourceResponse', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     upload_attachment.metadata = {'url': '/v3/conversations/{conversationId}/attachments'}

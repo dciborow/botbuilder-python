@@ -17,8 +17,8 @@ emulator_running = False
 async def reset():
     storage = CosmosDbStorage(cosmos_db_config)
     storage.client.DeleteDatabase(
-        database_link='dbs/' + cosmos_db_config.database,
-        ignore_errors=True)
+        database_link=f'dbs/{cosmos_db_config.database}', ignore_errors=True
+    )
 
 
 class SimpleStoreItem(StoreItem):

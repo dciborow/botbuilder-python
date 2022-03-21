@@ -130,19 +130,20 @@ class QnAMaker(QnAMakerTelemetryClient):
         :rtype: EventData
         """
 
-        properties: Dict[str,str] = dict()
-        metrics: Dict[str, float] = dict()
+        metrics: Dict[str, float] = {}
 
-        properties[QnATelemetryConstants.knowledge_base_id_property] = self._endpoint.knowledge_base_id
-
-        text: str = turn_context.activity.text
-        userName: str = turn_context.activity.from_property.name
+        properties: Dict[str, str] = {
+            QnATelemetryConstants.knowledge_base_id_property: self._endpoint.knowledge_base_id
+        }
 
         # Use the LogPersonalInformation flag to toggle logging PII data; text and username are common examples.
         if self.log_personal_information:
+            text: str = turn_context.activity.text
             if text:
                 properties[QnATelemetryConstants.question_property] = text
-            
+
+            userName: str = turn_context.activity.from_property.name
+
             if userName:
                 properties[QnATelemetryConstants.username_property] = userName
 
@@ -166,7 +167,7 @@ class QnAMaker(QnAMakerTelemetryClient):
                 QnATelemetryConstants.answer_property : 'No Qna Answer matched',
                 QnATelemetryConstants.article_found_property : 'false'
             }
-            
+
             properties.update(no_match_properties)
 
         # Additional Properties can override "stock" properties.
@@ -176,7 +177,7 @@ class QnAMaker(QnAMakerTelemetryClient):
         # Additional Metrics can override "stock" metrics.
         if telemetry_metrics:
             metrics.update(telemetry_metrics)
-        
+
         return EventData(properties=properties, metrics=metrics)
 
     async def get_answers(
@@ -241,13 +242,13 @@ class QnAMaker(QnAMakerTelemetryClient):
                 and query_options.score_threshold
             ):
                 hydrated_options.score_threshold = query_options.score_threshold
-            
-            if (query_options.top != hydrated_options.top and query_options.top != 0):
+
+            if query_options.top not in [hydrated_options.top, 0]:
                 hydrated_options.top = query_options.top
-            
+
             if (len(query_options.strict_filters) > 0):
                 hydrated_options.strict_filters = query_options.strict_filters
-            
+
             if (query_options.timeout != hydrated_options.timeout and query_options.timeout):
                 hydrated_options.timeout = query_options.timeout
 
@@ -314,10 +315,8 @@ class QnAMaker(QnAMakerTelemetryClient):
         if self._is_legacy_protocol:
             for answer in answers_within_threshold:
                 answer['id'] = answer.pop('qnaId', None)
-    
-        answers_as_query_results = list(map(lambda answer: QueryResult(**answer), sorted_answers))
 
-        return answers_as_query_results
+        return list(map(lambda answer: QueryResult(**answer), sorted_answers))
         
     def _get_headers(self):
         headers = { 
@@ -338,6 +337,4 @@ class QnAMaker(QnAMakerTelemetryClient):
         os_version = f'{uname.machine}-{uname.system}-{uname.version}'
         py_version = f'Python,Version={platform.python_version()}'
         platform_user_agent = f'({os_version}; {py_version})'
-        user_agent = f'{package_user_agent} {platform_user_agent}'
-        
-        return user_agent
+        return f'{package_user_agent} {platform_user_agent}'

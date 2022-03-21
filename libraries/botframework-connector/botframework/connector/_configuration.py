@@ -38,6 +38,6 @@ class ConnectorClientConfiguration(Configuration):
         # Starting Autorest.Python 4.0.64, make connection pool activated by default
         self.keep_alive = True
 
-        self.add_user_agent('botframework-connector/{}'.format(VERSION))
+        self.add_user_agent(f'botframework-connector/{VERSION}')
 
         self.credentials = credentials

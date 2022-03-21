@@ -5,7 +5,7 @@ from datetime import datetime
 from botbuilder.schema import Activity, ActivityTypes, Attachment, ChannelAccount, ConversationAccount
 
 def create_activity_reply(activity: Activity, text: str = None, locale: str = None, attachments: [Attachment] = []):
-    attachments_aux = [attachment for attachment in attachments]
+    attachments_aux = list(attachments)
 
     return Activity(
         type = ActivityTypes.message,

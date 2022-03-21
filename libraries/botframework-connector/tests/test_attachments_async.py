@@ -36,8 +36,7 @@ def read_base64(path_to_file):
     path_to_file = os.path.join(current_directory, "resources", path_to_file)
 
     with open(path_to_file, "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read())
-        return encoded_string
+        return base64.b64encode(image_file.read())
 
 async def return_sum(attachment_stream):
     counter = 0

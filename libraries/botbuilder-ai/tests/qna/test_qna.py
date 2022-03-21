@@ -19,7 +19,7 @@ from botbuilder.schema import Activity, ActivityTypes, ChannelAccount, ResourceR
 class TestContext(TurnContext):
     def __init__(self, request):
         super().__init__(TestAdapter(), request)
-        self.sent: List[Activity] = list()
+        self.sent: List[Activity] = []
 
         self.on_send_activities(self.capture_sent_activities)
 
@@ -611,9 +611,7 @@ class QnaApplicationTest(aiounittest.AsyncTestCase):
 
         with open(response_path, "r", encoding="utf-8-sig") as f:
             response_str = f.read()
-        response_json = json.loads(response_str)
-
-        return response_json
+        return json.loads(response_str)
 
     @staticmethod
     def _get_context(question: str, bot_adapter: BotAdapter) -> TurnContext:

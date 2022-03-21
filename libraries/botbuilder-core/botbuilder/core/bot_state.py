@@ -75,12 +75,12 @@ class BotState(PropertyManager):
         :param turn_context: The context object for this turn.
         :param force: Optional. True to bypass the cache.
         """
-        if turn_context == None:
+        if turn_context is None:
             raise TypeError('BotState.load(): turn_context cannot be None.')
-        
+
         cached_state = turn_context.turn_state.get(self._context_service_key)
         storage_key = self.get_storage_key(turn_context)
-        
+
         if (force or not cached_state or not cached_state.state) :
             items = await self._storage.read([storage_key])
             val = items.get(storage_key)
@@ -92,11 +92,11 @@ class BotState(PropertyManager):
         :param turn_context: The context object for this turn.
         :param force: Optional. True to save state to storage whether or not there are changes.
         """
-        if turn_context == None:
+        if turn_context is None:
             raise TypeError('BotState.save_changes(): turn_context cannot be None.')
-        
+
         cached_state = turn_context.turn_state.get(self._context_service_key)
-        
+
         if force or (cached_state != None and cached_state.is_changed == True):
             storage_key = self.get_storage_key(turn_context)
             changes : Dict[str, object] = { storage_key: cached_state.state }
@@ -111,9 +111,9 @@ class BotState(PropertyManager):
         :param turn_context: The context object for this turn.
         :return: None
         """
-        if turn_context == None:
+        if turn_context is None:
             raise TypeError('BotState.clear_state(): turn_context cannot be None.')
-        
+
         #  Explicitly setting the hash will mean IsChanged is always true. And that will force a Save.
         cache_value = CachedBotState()
         cache_value.hash = ''
@@ -126,11 +126,11 @@ class BotState(PropertyManager):
         :param turn_context: The context object for this turn.
         :return: None
         """
-        if turn_context == None:
+        if turn_context is None:
             raise TypeError('BotState.delete(): turn_context cannot be None.')
-        
+
         turn_context.turn_state.pop(self._context_service_key)
-            
+
         storage_key = self.get_storage_key(turn_context)
         await self._storage.delete({ storage_key })
         
@@ -139,12 +139,12 @@ class BotState(PropertyManager):
         raise NotImplementedError()
 
     async def get_property_value(self, turn_context: TurnContext, property_name: str):
-        if turn_context == None:
+        if turn_context is None:
             raise TypeError('BotState.get_property_value(): turn_context cannot be None.')
         if not property_name:
             raise TypeError('BotState.get_property_value(): property_name cannot be None.')
         cached_state = turn_context.turn_state.get(self._context_service_key)
-        
+
         # if there is no value, this will throw, to signal to IPropertyAccesor that a default value should be computed
         # This allows this to work with value types
         return cached_state.state[property_name]
@@ -158,7 +158,7 @@ class BotState(PropertyManager):
         :return: None
         """
 
-        if turn_context == None:
+        if turn_context is None:
             raise TypeError('BotState.delete_property(): turn_context cannot be None.')
         if not property_name:
             raise TypeError('BotState.delete_property(): property_name cannot be None.')
@@ -174,7 +174,7 @@ class BotState(PropertyManager):
         :return: None
         """
 
-        if turn_context == None:
+        if turn_context is None:
             raise TypeError('BotState.delete_property(): turn_context cannot be None.')
         if not property_name:
             raise TypeError('BotState.delete_property(): property_name cannot be None.')

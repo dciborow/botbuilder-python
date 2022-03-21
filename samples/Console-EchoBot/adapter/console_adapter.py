@@ -68,9 +68,7 @@ class ConsoleAdapter(BotAdapter):
         """
         while True:
             msg = input()
-            if msg is None:
-                pass
-            else:
+            if msg is not None:
                 self._next_id += 1
                 activity = Activity(text=msg,
                                     channel_id='console',
@@ -102,25 +100,22 @@ class ConsoleAdapter(BotAdapter):
         async def next_activity(i: int):
             responses = []
 
-            if i < len(activities):
-                responses.append(ResourceResponse())
-                a = activities[i]
-
-                if a.type == 'delay':
-                    await asyncio.sleep(a.delay)
-                    await next_activity(i + 1)
-                elif a.type == ActivityTypes.message:
-                    if a.attachments is not None and len(a.attachments) > 0:
-                        append = '(1 attachment)' if len(a.attachments) == 1 else f'({len(a.attachments)} attachments)'
-                        print(f'{a.text} {append}')
-                    else:
-                        print(a.text)
-                    await next_activity(i + 1)
-                else:
-                    print(f'[{a.type}]')
-                    await next_activity(i + 1)
-            else:
+            if i >= len(activities):
                 return responses
+            responses.append(ResourceResponse())
+            a = activities[i]
+
+            if a.type == 'delay':
+                await asyncio.sleep(a.delay)
+            elif a.type == ActivityTypes.message:
+                if a.attachments is not None and len(a.attachments) > 0:
+                    append = '(1 attachment)' if len(a.attachments) == 1 else f'({len(a.attachments)} attachments)'
+                    print(f'{a.text} {append}')
+                else:
+                    print(a.text)
+            else:
+                print(f'[{a.type}]')
+            await next_activity(i + 1)
 
         await next_activity(0)
 

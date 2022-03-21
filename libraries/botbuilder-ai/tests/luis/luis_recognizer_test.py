@@ -725,8 +725,7 @@ class LuisRecognizerTest(AsyncTestCase):
 
         with open(response_path, "r", encoding="utf-8-sig") as f:
             response_str = f.read()
-        response_json = json.loads(response_str)
-        return response_json
+        return json.loads(response_str)
 
     @classmethod
     def _get_luis_recognizer(

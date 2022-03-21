@@ -38,6 +38,6 @@ class TokenApiClientConfiguration(Configuration):
         # Starting Autorest.Python 4.0.64, make connection pool activated by default
         self.keep_alive = True
 
-        self.add_user_agent('botframework-Token/{}'.format(VERSION))
+        self.add_user_agent(f'botframework-Token/{VERSION}')
 
         self.credentials = credentials

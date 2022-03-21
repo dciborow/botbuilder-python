@@ -95,7 +95,6 @@ class TestAuth:
         assert not MicrosoftAppCredentials.is_trusted_service('https://webchat.botframework.com/')
 
     @pytest.mark.asyncio
-    # Tests with no authentication header and makes sure the service URL is not added to the trusted list.
     async def test_channel_authentication_disabled_should_be_anonymous(self):
         activity = Activity(service_url = 'https://webchat.botframework.com/')
         header = ''
@@ -103,7 +102,7 @@ class TestAuth:
 
         claimsPrincipal = await JwtTokenValidation.authenticate_request(activity, header, credentials)
 
-        assert claimsPrincipal == None
+        assert claimsPrincipal is None
     
     @pytest.mark.asyncio
     # Tests with no authentication header and makes sure the service URL is not added to the trusted list.

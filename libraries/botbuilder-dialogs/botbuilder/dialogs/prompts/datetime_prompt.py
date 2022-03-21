@@ -33,17 +33,16 @@ class DateTimePrompt(Prompt):
             raise TypeError('DateTimePrompt.on_prompt(): turn_context cannot be None.')
         if not options:
             raise TypeError('DateTimePrompt.on_prompt(): options cannot be None.')
-        
-        if is_retry == True and options.retry_prompt != None:
-            await turn_context.send_activity(options.retry_prompt)  
-        else:
-            if options.prompt != None:
-                await turn_context.send_activity(options.prompt)
+
+        if is_retry and options.retry_prompt != None:
+            await turn_context.send_activity(options.retry_prompt)
+        elif options.prompt != None:
+            await turn_context.send_activity(options.prompt)
 
     async def on_recognize(self, turn_context: TurnContext, state: Dict[str, object], options: PromptOptions) -> PromptRecognizerResult:
         if not turn_context:
             raise TypeError('DateTimePrompt.on_recognize(): turn_context cannot be None.')
-        
+
         result = PromptRecognizerResult()
         if turn_context.activity.type == ActivityTypes.message:
             # Recognize utterance
@@ -57,9 +56,7 @@ class DateTimePrompt(Prompt):
                 result.succeeded = True
                 result.value = []
                 values = results[0].resolution['values']
-                for value in values:
-                    result.value.append(self.read_resolution(value))
-        
+                result.value.extend(self.read_resolution(value) for value in values)
         return result
         
     def read_resolution(self, resolution: Dict[str, str]) -> DateTimeResolution:

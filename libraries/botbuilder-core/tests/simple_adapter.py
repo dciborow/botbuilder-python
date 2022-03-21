@@ -25,12 +25,7 @@ class SimpleAdapter(BotAdapter):
         self.test_aux.assertTrue(len(activities) > 0, "SimpleAdapter.send_activities: empty activities array.")
 
         if self._call_on_send is not None: self._call_on_send(activities)
-        responses = []
-
-        for activity in activities:
-            responses.append(ResourceResponse(id=activity.id))
-        
-        return responses
+        return [ResourceResponse(id=activity.id) for activity in activities]
     
     async def update_activity(self, context: TurnContext, activity: Activity):
         self.test_aux.assertIsNotNone(activity, "SimpleAdapter.update_activity: missing activity")

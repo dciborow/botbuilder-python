@@ -15,8 +15,7 @@ def retrieve_bot_body():
 
     TODO: Add cleanup job to kill orphans
     """
-    result = _request_bodies.pop(current_thread().ident, None)
-    return result
+    return _request_bodies.pop(current_thread().ident, None)
 
 class BotTelemetryMiddleware():
     """

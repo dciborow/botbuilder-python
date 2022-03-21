@@ -28,13 +28,16 @@ class MainDialog(ComponentDialog):
         self.initial_dialog_id = 'WFDialog'
     
     async def intro_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
-        if (not self._configuration.get("LUIS_APP_ID", "") or not self._configuration.get("LUIS_API_KEY", "") or not self._configuration.get("LUIS_API_HOST_NAME", "")):
-            await step_context.context.send_activity(
-                MessageFactory.text("NOTE: LUIS is not configured. To enable all capabilities, add 'LUIS_APP_ID', 'LUIS_API_KEY' and 'LUIS_API_HOST_NAME' to the config.py file."))
-
-            return await step_context.next(None)
-        else:
+        if (
+            self._configuration.get("LUIS_APP_ID", "")
+            and self._configuration.get("LUIS_API_KEY", "")
+            and self._configuration.get("LUIS_API_HOST_NAME", "")
+        ):
             return await step_context.prompt(TextPrompt.__name__, PromptOptions(prompt = MessageFactory.text("What can I help you with today?")))
+        await step_context.context.send_activity(
+            MessageFactory.text("NOTE: LUIS is not configured. To enable all capabilities, add 'LUIS_APP_ID', 'LUIS_API_KEY' and 'LUIS_API_HOST_NAME' to the config.py file."))
+
+        return await step_context.next(None)
 
 
     async def act_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:

@@ -78,9 +78,7 @@ class DialogContext():
         :param:
         :return str:
         """    
-        if self._stack != None and len(self._stack) > 0:
-            return self._stack[0]
-        return None
+        return self._stack[0] if self._stack != None and len(self._stack) > 0 else None
 
 
     
@@ -133,17 +131,15 @@ class DialogContext():
         to determine if a dialog was run and a reply was sent to the user.
         :return:
         """
-        # Check for a dialog on the stack
-        if self.active_dialog != None:
-            # Look up dialog
-            dialog = await self.find_dialog(self.active_dialog.id)
-            if not dialog:
-                raise Exception("DialogContext.continue_dialog(): Can't continue dialog. A dialog with an id of '%s' wasn't found." % self.active_dialog.id)
-
-            # Continue execution of dialog
-            return await dialog.continue_dialog(self)
-        else:
+        if self.active_dialog is None:
             return DialogTurnResult(DialogTurnStatus.Empty)
+        # Look up dialog
+        dialog = await self.find_dialog(self.active_dialog.id)
+        if not dialog:
+            raise Exception("DialogContext.continue_dialog(): Can't continue dialog. A dialog with an id of '%s' wasn't found." % self.active_dialog.id)
+
+        # Continue execution of dialog
+        return await dialog.continue_dialog(self)
 
     # TODO: instance is DialogInstance
     async def end_dialog(self, result: object = None):
@@ -160,17 +156,15 @@ class DialogContext():
         """
         await self.end_active_dialog(DialogReason.EndCalled)
 
-        # Resume previous dialog
-        if self.active_dialog != None:
-            # Look up dialog
-            dialog = await self.find_dialog(self.active_dialog.id)
-            if not dialog:
-                raise Exception("DialogContext.EndDialogAsync(): Can't resume previous dialog. A dialog with an id of '%s' wasn't found." % self.active_dialog.id)
-
-            # Return result to previous dialog
-            return await dialog.resume_dialog(self, DialogReason.EndCalled, result)
-        else:
+        if self.active_dialog is None:
             return DialogTurnResult(DialogTurnStatus.Complete, result)
+        # Look up dialog
+        dialog = await self.find_dialog(self.active_dialog.id)
+        if not dialog:
+            raise Exception("DialogContext.EndDialogAsync(): Can't resume previous dialog. A dialog with an id of '%s' wasn't found." % self.active_dialog.id)
+
+        # Return result to previous dialog
+        return await dialog.resume_dialog(self, DialogReason.EndCalled, result)
 
 
     async def cancel_all_dialogs(self):
@@ -179,12 +173,11 @@ class DialogContext():
         :param result: (Optional) result to pass to the parent dialogs.
         :return:
         """
-        if (len(self.stack) > 0):
-            while (len(self.stack) > 0):
-                await self.end_active_dialog(DialogReason.CancelCalled)
-            return DialogTurnResult(DialogTurnStatus.Cancelled)
-        else:
+        if len(self.stack) <= 0:
             return DialogTurnResult(DialogTurnStatus.Empty)
+        while (len(self.stack) > 0):
+            await self.end_active_dialog(DialogReason.CancelCalled)
+        return DialogTurnResult(DialogTurnStatus.Cancelled)
 
     async def find_dialog(self, dialog_id: str) -> Dialog:
         """
@@ -195,7 +188,7 @@ class DialogContext():
         """
         dialog = await self.dialogs.find(dialog_id)
 
-        if (dialog == None and self.parent != None):
+        if dialog is None and self.parent != None:
             dialog = await self.parent.find_dialog(dialog_id)
         return dialog
 

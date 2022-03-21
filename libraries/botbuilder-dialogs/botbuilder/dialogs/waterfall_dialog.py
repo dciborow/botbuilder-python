@@ -28,10 +28,10 @@ class WaterfallDialog(Dialog):
         super(WaterfallDialog, self).__init__(dialog_id)
         if not steps:
             self._steps = []
-        else:
-            if not isinstance(steps, list):
-                raise TypeError('WaterfallDialog(): steps must be list of steps')
+        elif isinstance(steps, list):
             self._steps = steps
+        else:
+            raise TypeError('WaterfallDialog(): steps must be list of steps')
 
     def add_step(self, step):
         """
@@ -50,18 +50,16 @@ class WaterfallDialog(Dialog):
         
         if not dc:
             raise TypeError('WaterfallDialog.begin_dialog(): dc cannot be None.')
-        
+
         # Initialize waterfall state
         state = dc.active_dialog.state
-        
+
         instance_id = uuid.uuid1().__str__()
         state[self.PersistedOptions] = options
         state[self.PersistedValues] = {}
         state[self.PersistedInstanceId] = instance_id
-        
-        properties = {}
-        properties['DialogId'] = self.id
-        properties['InstanceId'] = instance_id
+
+        properties = {'DialogId': self.id, 'InstanceId': instance_id}
         self.telemetry_client.track_event("WaterfallStart", properties)
         # Run first stepkinds
         return await self.run_step(dc, 0, DialogReason.BeginCalled, None) 
@@ -98,16 +96,15 @@ class WaterfallDialog(Dialog):
                 "InstanceId" : instance_id 
             }
             self.telemetry_client.track_event("WaterfallCancel", properties)
-        else:
-            if reason is DialogReason.EndCalled:
+        elif reason is DialogReason.EndCalled:
 
-                instance_id = str(instance.state[self.PersistedInstanceId])
-                properties = {
-                    "DialogId": self.id,
-                    "InstanceId": instance_id
-                }
-                self.telemetry_client.track_event("WaterfallComplete", properties)
-        
+            instance_id = str(instance.state[self.PersistedInstanceId])
+            properties = {
+                "DialogId": self.id,
+                "InstanceId": instance_id
+            }
+            self.telemetry_client.track_event("WaterfallComplete", properties)
+
         return 
     
     async def on_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
@@ -124,19 +121,18 @@ class WaterfallDialog(Dialog):
     async def run_step(self, dc: DialogContext, index: int, reason: DialogReason, result: object) -> DialogTurnResult:
         if not dc:
             raise TypeError('WaterfallDialog.run_steps(): dc cannot be None.')
-        if index < len(self._steps):
-            # Update persisted step index
-            state = dc.active_dialog.state
-            state[self.StepIndex] = index
-            
-            # Create step context
-            options = state[self.PersistedOptions]
-            values = state[self.PersistedValues]
-            step_context = WaterfallStepContext(self, dc, options, values, index, reason, result)
-            return await self.on_step(step_context)
-        else:
+        if index >= len(self._steps):
             # End of waterfall so just return any result to parent
             return await dc.end_dialog(result)
+        # Update persisted step index
+        state = dc.active_dialog.state
+        state[self.StepIndex] = index
+
+        # Create step context
+        options = state[self.PersistedOptions]
+        values = state[self.PersistedValues]
+        step_context = WaterfallStepContext(self, dc, options, values, index, reason, result)
+        return await self.on_step(step_context)
 
     def get_step_name(self, index: int) -> str:
         """

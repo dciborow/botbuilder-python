@@ -64,8 +64,7 @@ class BotSignInOperations(object):
         url = self.get_sign_in_url.metadata['url']
 
         # Construct parameters
-        query_parameters = {}
-        query_parameters['state'] = self._serialize.query("state", state, 'str')
+        query_parameters = {'state': self._serialize.query("state", state, 'str')}
         if code_challenge is not None:
             query_parameters['code_challenge'] = self._serialize.query("code_challenge", code_challenge, 'str')
         if emulator_url is not None:
@@ -75,8 +74,7 @@ class BotSignInOperations(object):
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters = {'Accept': 'application/json'}
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -92,8 +90,7 @@ class BotSignInOperations(object):
             deserialized = self._deserialize('str', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     get_sign_in_url.metadata = {'url': '/api/botsignin/GetSignInUrl'}

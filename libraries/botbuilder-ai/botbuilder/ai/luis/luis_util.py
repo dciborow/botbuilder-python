@@ -56,7 +56,7 @@ class LuisUtil:
 
         # We start by populating composite entities so that entities covered by them are removed from the entities list
         if composite_entities:
-            composite_entity_types = set(ce.parent_type for ce in composite_entities)
+            composite_entity_types = {ce.parent_type for ce in composite_entities}
             current = entities
             for compositeEntity in composite_entities:
                 current = LuisUtil.populate_composite_entity_model(
@@ -91,11 +91,9 @@ class LuisUtil:
 
         try:
             s = str(value)
-            i = int(s)
-            return i
+            return int(s)
         except ValueError:
-            f = float(s)
-            return f
+            return float(s)
 
     @staticmethod
     def extract_entity_value(entity: EntityModel) -> object:
@@ -122,9 +120,7 @@ class LuisUtil:
                 return LuisUtil.number(resolution["value"])
             elif entity.type == "builtin.percentage":
                 svalue = str(resolution["value"])
-                if svalue.endswith("%"):
-                    svalue = svalue[:-1]
-
+                svalue = svalue.removesuffix("%")
                 return LuisUtil.number(svalue)
             elif entity.type in {
                 "builtin.age",
@@ -296,8 +292,7 @@ class LuisUtil:
         os_version = f"{uname.machine}-{uname.system}-{uname.version}"
         py_version = f"Python,Version={platform.python_version()}"
         platform_user_agent = f"({os_version}; {py_version})"
-        user_agent = f"{package_user_agent} {platform_user_agent}"
-        return user_agent
+        return f"{package_user_agent} {platform_user_agent}"
 
     @staticmethod
     def recognizer_result_as_dict(
@@ -329,10 +324,7 @@ class LuisUtil:
 
     @staticmethod
     def intent_score_as_dict(intent_score: IntentScore) -> Dict[str, float]:
-        if intent_score is None:
-            return None
-
-        return {"score": intent_score.score}
+        return None if intent_score is None else {"score": intent_score.score}
 
     @staticmethod
     def luis_result_as_dict(luis_result: LuisResult) -> Dict[str, object]:
@@ -343,5 +335,4 @@ class LuisUtil:
             k: v for k, v in runtime_models.__dict__.items() if isinstance(v, type)
         }
         serializer = Serializer(client_models)
-        d = serializer.body(luis_result, "LuisResult")
-        return d
+        return serializer.body(luis_result, "LuisResult")

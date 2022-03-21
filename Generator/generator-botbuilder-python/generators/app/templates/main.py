@@ -24,7 +24,10 @@ async def create_reply_activity(request_activity, text) -> Activity:
 
 
 async def handle_message(context: TurnContext) -> web.Response:
-    response = await create_reply_activity(context.request, 'You said %s.' % context.request.text)
+    response = await create_reply_activity(
+        context.request, f'You said {context.request.text}.'
+    )
+
     await context.send_activity(response)
     return web.Response(status=202)
 

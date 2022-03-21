@@ -36,8 +36,7 @@ def read_base64(path_to_file):
     path_to_file = os.path.join(current_directory, "resources", path_to_file)
 
     with open(path_to_file, "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read())
-        return encoded_string
+        return base64.b64encode(image_file.read())
 
 loop = asyncio.get_event_loop()
 auth_token = loop.run_until_complete(get_auth_token())

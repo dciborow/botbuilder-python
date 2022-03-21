@@ -13,9 +13,9 @@ class Dialog(ABC):
     end_of_turn = DialogTurnResult(DialogTurnStatus.Waiting)
     
     def __init__(self, dialog_id: str):
-        if dialog_id == None or not dialog_id.strip():
+        if dialog_id is None or not dialog_id.strip():
             raise TypeError('Dialog(): dialogId cannot be None.')
-        
+
         self._telemetry_client = NullTelemetryClient()
         self._id = dialog_id
 
@@ -35,10 +35,7 @@ class Dialog(ABC):
         """
         Sets the telemetry client for logging events.
         """
-        if value is None:
-            self._telemetry_client = NullTelemetryClient()
-        else:
-            self._telemetry_client = value
+        self._telemetry_client = NullTelemetryClient() if value is None else value
 
     @abstractmethod
     async def begin_dialog(self, dc: 'DialogContext', options: object = None):

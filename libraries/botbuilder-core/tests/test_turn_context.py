@@ -23,7 +23,7 @@ class SimpleAdapter(BotAdapter):
         assert activities is not None
         assert type(activities) == list
         assert len(activities) > 0
-        for (idx, activity) in enumerate(activities):
+        for activity in activities:
             assert isinstance(activity, Activity)
             assert activity.type == 'message'
             responses.append(ResourceResponse(id='5678'))

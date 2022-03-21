@@ -62,9 +62,7 @@ class StringAdapter(BotAdapter):
         :return:
         """
         for msg in msgs:
-            if msg is None:
-                pass
-            else:
+            if msg is not None:
                 self._next_id += 1
                 activity = Activity(text=msg,
                                     channel_id='console',
@@ -98,27 +96,24 @@ class StringAdapter(BotAdapter):
         async def next_activity(i: int):
             responses = []
 
-            file = open(self.file + "bot.out", "a")
-            if i < len(activities):
-                responses.append(ResourceResponse())
-                activity = activities[i]
-
-                if activity.type == 'delay':
-                    await asyncio.sleep(activity.delay)
-                    await next_activity(i + 1)
-                elif activity.type == ActivityTypes.message:
-                    if activity.attachments is not None:
-                        append = '(1 attachment)' if len(activity.attachments) == 1 \
-                            else f'({len(activity.attachments)} attachments)'
-                        file.write(f'{activity.text} {append}' + "\n")
-                    else:
-                        file.write(activity.text + "\n")
-                    await next_activity(i + 1)
-                else:
-                    file.write(f'[{activity.type}]' + "\n")
-                    await next_activity(i + 1)
-            else:
+            file = open(f'{self.file}bot.out', "a")
+            if i >= len(activities):
                 return responses
+            responses.append(ResourceResponse())
+            activity = activities[i]
+
+            if activity.type == 'delay':
+                await asyncio.sleep(activity.delay)
+            elif activity.type == ActivityTypes.message:
+                if activity.attachments is not None:
+                    append = '(1 attachment)' if len(activity.attachments) == 1 \
+                        else f'({len(activity.attachments)} attachments)'
+                    file.write(f'{activity.text} {append}' + "\n")
+                else:
+                    file.write(activity.text + "\n")
+            else:
+                file.write(f'[{activity.type}]' + "\n")
+            await next_activity(i + 1)
 
         await next_activity(0)
 
@@ -160,24 +155,21 @@ async def string_test_struc(msgs, answers, file='test'):
 
     await adapter.process_activities(msgs, bot.on_turn)
     test_array = []
-    with open(file + 'bot.out') as my_file:
-        for line in my_file:
-            test_array.append(line)
+    with open(f'{file}bot.out') as my_file:
+        test_array.extend(iter(my_file))
     try:
-        i = 0
-        for answer in answers:
+        for i, answer in enumerate(answers):
             assert test_array[i] == answer
-            i += 1
     finally:
         print("Done")
-        os.remove(file + 'bot.out')
+        os.remove(f'{file}bot.out')
 
 
 async def notify_struc(bot, client):
     """
     Test Notify Post Endpoint
     """
-    url = '/api/notify/' + bot
+    url = f'/api/notify/{bot}'
 
     response = client.post(url)
 

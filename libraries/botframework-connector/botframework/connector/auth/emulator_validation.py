@@ -73,7 +73,7 @@ class EmulatorValidation:
 
         # Is the token issues by a source we consider to be the emulator?
         issuer_list = EmulatorValidation.TO_BOT_FROM_EMULATOR_TOKEN_VALIDATION_PARAMETERS.issuer
-        if issuer_list and not issuer in issuer_list:
+        if issuer_list and issuer not in issuer_list:
             # Not a Valid Issuer. This is NOT a Bot Framework Emulator Token.
             return False
 

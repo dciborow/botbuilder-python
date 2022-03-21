@@ -40,7 +40,7 @@ class ConfirmPrompt(Prompt):
             raise TypeError('ConfirmPrompt.on_prompt(): turn_context cannot be None.')
         if not options:
             raise TypeError('ConfirmPrompt.on_prompt(): options cannot be None.')
-        
+
         # Format prompt to send
         channel_id = turn_context.activity.channel_id
         culture  = self.determine_culture(turn_context.activity)
@@ -48,8 +48,8 @@ class ConfirmPrompt(Prompt):
         choice_opts = self.choice_options if self.choice_options != None else defaults[2]
         confirms = self.confirm_choices if self.confirm_choices != None else (defaults[0], defaults[1])
         choices = { confirms[0], confirms[1] }
-        if is_retry == True and options.retry_prompt != None:
-            prompt = self.append_choices(options.retry_prompt, channel_id, choices, self.style, choice_opts)  
+        if is_retry and options.retry_prompt != None:
+            prompt = self.append_choices(options.retry_prompt, channel_id, choices, self.style, choice_opts)
         else:
             prompt = self.append_choices(options.prompt, channel_id, choices, self.style, choice_opts)
         await turn_context.send_activity(prompt)
@@ -90,6 +90,6 @@ class ConfirmPrompt(Prompt):
         
     def determine_culture(self, activity: Activity) -> str:
         culture = activity.locale if activity.locale != None else self.default_locale
-        if not culture or not culture in self.choice_defaults:
+        if not culture or culture not in self.choice_defaults:
             culture = "English" # TODO: Fix to reference recognizer to use proper constants
         return culture

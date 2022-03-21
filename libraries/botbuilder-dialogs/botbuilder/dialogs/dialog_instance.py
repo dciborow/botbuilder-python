@@ -54,7 +54,7 @@ class DialogInstance:
 
     def __str__(self):
         result = "\ndialog_instance_id: %s\n" % self.id
-        if not self._state is None:
+        if self._state is not None:
             for key, value in self._state.items():
                 result += "   {} ({})\n".format(key, str(value))
         return result

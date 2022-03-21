@@ -62,7 +62,7 @@ class Prompt(Dialog):
     async def continue_dialog(self, dc: DialogContext):
         if not dc:
             raise TypeError('Prompt(): dc cannot be None.')
-        
+
         # Don't do anything for non-message activities
         if dc.context.activity.type != ActivityTypes.message:
             return Dialog.end_of_turn
@@ -75,22 +75,20 @@ class Prompt(Dialog):
 
         # Validate the return value
         is_valid = False
-        if self._validator != None:
+        if self._validator is None:
+            if recognized.succeeded:
+                is_valid = True
+        else:
             prompt_context = PromptValidatorContext(dc.context, recognized, state, options)
             is_valid = await self._validator(prompt_context)
             if options is None:
                 options = PromptOptions()
             options.number_of_attempts += 1
-        else:
-            if recognized.succeeded:
-                is_valid = True
-        # Return recognized value or re-prompt
         if is_valid:
             return await dc.end_dialog(recognized.value)
-        else:
-            if not dc.context.responded:
-                await self.on_prompt(dc.context, state, options, True)
-            return Dialog.end_of_turn
+        if not dc.context.responded:
+            await self.on_prompt(dc.context, state, options, True)
+        return Dialog.end_of_turn
        
     async def resume_dialog(self, dc: DialogContext, reason: DialogReason, result: object) -> DialogTurnResult:
         # Prompts are typically leaf nodes on the stack but the dev is free to push other dialogs

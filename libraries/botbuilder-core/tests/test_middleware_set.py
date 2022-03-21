@@ -36,7 +36,7 @@ class TestMiddlewareSet(aiounittest.AsyncTestCase):
                 super(PrintMiddleware, self).__init__()
 
             async def on_process_request(self, context_or_string, next_middleware):
-                print('PrintMiddleware says: %s.' % context_or_string)
+                print(f'PrintMiddleware says: {context_or_string}.')
                 return next_middleware
 
         class ModifyInputMiddleware(Middleware):
@@ -46,7 +46,7 @@ class TestMiddlewareSet(aiounittest.AsyncTestCase):
             async def on_process_request(self, context_or_string, next_middleware):
                 context_or_string = 'Hello'
                 print(context_or_string)
-                print('Here is the current context_or_string: %s' % context_or_string)
+                print(f'Here is the current context_or_string: {context_or_string}')
                 return next_middleware
 
         async def request_handler(context_or_string):

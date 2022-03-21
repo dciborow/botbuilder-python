@@ -61,9 +61,14 @@ class JwtTokenExtractor:
         key_id = headers.get("kid", None)
         metadata = await self.open_id_metadata.get(key_id)
 
-        if key_id and metadata.endorsements:
-            if not EndorsementsValidator.validate(channel_id, metadata.endorsements):
-                raise Exception('Could not validate endorsement key')
+        if (
+            key_id
+            and metadata.endorsements
+            and not EndorsementsValidator.validate(
+                channel_id, metadata.endorsements
+            )
+        ):
+            raise Exception('Could not validate endorsement key')
 
         if headers.get("alg", None) not in self.validation_parameters.algorithms:
             raise Exception('Token signing algorithm not in allowed list')
@@ -72,9 +77,7 @@ class JwtTokenExtractor:
             'verify_aud': False,
             'verify_exp': not self.validation_parameters.ignore_expiration}
         decoded_payload = jwt.decode(jwt_token, metadata.public_key, options=options)
-        claims = ClaimsIdentity(decoded_payload, True)
-
-        return claims
+        return ClaimsIdentity(decoded_payload, True)
 
 class _OpenIdMetadata:
     def __init__(self, url):

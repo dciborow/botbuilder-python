@@ -64,8 +64,7 @@ class UserTokenOperations(object):
         url = self.get_token.metadata['url']
 
         # Construct parameters
-        query_parameters = {}
-        query_parameters['userId'] = self._serialize.query("user_id", user_id, 'str')
+        query_parameters = {'userId': self._serialize.query("user_id", user_id, 'str')}
         query_parameters['connectionName'] = self._serialize.query("connection_name", connection_name, 'str')
         if channel_id is not None:
             query_parameters['channelId'] = self._serialize.query("channel_id", channel_id, 'str')
@@ -74,8 +73,7 @@ class UserTokenOperations(object):
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters = {'Accept': 'application/json'}
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -93,8 +91,7 @@ class UserTokenOperations(object):
             deserialized = self._deserialize('TokenResponse', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     get_token.metadata = {'url': '/api/usertoken/GetToken'}
@@ -128,17 +125,18 @@ class UserTokenOperations(object):
         url = self.get_aad_tokens.metadata['url']
 
         # Construct parameters
-        query_parameters = {}
-        query_parameters['userId'] = self._serialize.query("user_id", user_id, 'str')
+        query_parameters = {'userId': self._serialize.query("user_id", user_id, 'str')}
         query_parameters['connectionName'] = self._serialize.query("connection_name", connection_name, 'str')
         if channel_id is not None:
             query_parameters['channelId'] = self._serialize.query("channel_id", channel_id, 'str')
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
-        header_parameters['Content-Type'] = 'application/json; charset=utf-8'
+        header_parameters = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json; charset=utf-8',
+        }
+
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -157,8 +155,7 @@ class UserTokenOperations(object):
             deserialized = self._deserialize('{TokenResponse}', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     get_aad_tokens.metadata = {'url': '/api/usertoken/GetAadTokens'}
@@ -187,8 +184,7 @@ class UserTokenOperations(object):
         url = self.sign_out.metadata['url']
 
         # Construct parameters
-        query_parameters = {}
-        query_parameters['userId'] = self._serialize.query("user_id", user_id, 'str')
+        query_parameters = {'userId': self._serialize.query("user_id", user_id, 'str')}
         if connection_name is not None:
             query_parameters['connectionName'] = self._serialize.query("connection_name", connection_name, 'str')
         if channel_id is not None:
@@ -196,8 +192,7 @@ class UserTokenOperations(object):
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters = {'Accept': 'application/json'}
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -213,8 +208,7 @@ class UserTokenOperations(object):
             deserialized = self._deserialize('object', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     sign_out.metadata = {'url': '/api/usertoken/SignOut'}
@@ -244,8 +238,7 @@ class UserTokenOperations(object):
         url = self.get_token_status.metadata['url']
 
         # Construct parameters
-        query_parameters = {}
-        query_parameters['userId'] = self._serialize.query("user_id", user_id, 'str')
+        query_parameters = {'userId': self._serialize.query("user_id", user_id, 'str')}
         if channel_id is not None:
             query_parameters['channelId'] = self._serialize.query("channel_id", channel_id, 'str')
         if include is not None:
@@ -253,8 +246,7 @@ class UserTokenOperations(object):
         query_parameters['api-version'] = self._serialize.query("self.api_version", self.api_version, 'str')
 
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters = {'Accept': 'application/json'}
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -270,8 +262,7 @@ class UserTokenOperations(object):
             deserialized = self._deserialize('[TokenStatus]', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     get_token_status.metadata = {'url': '/api/usertoken/GetTokenStatus'}

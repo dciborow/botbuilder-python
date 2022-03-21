@@ -74,7 +74,7 @@ class Channel(object):
             bool: True if the Channel has a Message Feed, False if it does not.
         """
 
-        return False if channel_id == Channels.cortana else True
+        return channel_id != Channels.cortana
 
     @staticmethod
     def max_action_title_length(channel_id: str) -> int:

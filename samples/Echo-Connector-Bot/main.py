@@ -40,7 +40,10 @@ class BotRequestHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         credentials = MicrosoftAppCredentials(APP_ID, APP_PASSWORD)
         connector = ConnectorClient(credentials, base_url=activity.service_url)
-        reply = BotRequestHandler.__create_reply_activity(activity, 'You said: %s' % activity.text)
+        reply = BotRequestHandler.__create_reply_activity(
+            activity, f'You said: {activity.text}'
+        )
+
         connector.conversations.send_to_conversation(reply.conversation.id, reply)
 
     def __handle_authentication(self, activity):

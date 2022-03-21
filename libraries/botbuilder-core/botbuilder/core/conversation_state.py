@@ -36,7 +36,8 @@ class ConversationState(BotState):
         channel_id = getattr(activity, 'channel_id', None)
         conversation_id = getattr(activity.conversation, 'id', None) if hasattr(activity, 'conversation') else None
 
-        storage_key = None
-        if channel_id and conversation_id:
-            storage_key = "%s/conversations/%s" % (channel_id,conversation_id)
-        return storage_key
+        return (
+            f"{channel_id}/conversations/{conversation_id}"
+            if channel_id and conversation_id
+            else None
+        )

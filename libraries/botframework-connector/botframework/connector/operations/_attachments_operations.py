@@ -65,10 +65,9 @@ class AttachmentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters = {'Accept': 'application/json'}
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -84,8 +83,7 @@ class AttachmentsOperations(object):
             deserialized = self._deserialize('AttachmentInfo', response)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     get_attachment_info.metadata = {'url': '/v3/attachments/{attachmentId}'}
@@ -125,10 +123,9 @@ class AttachmentsOperations(object):
 
         # Construct parameters
         query_parameters = {}
-        
+
         # Construct headers
-        header_parameters = {}
-        header_parameters['Accept'] = 'application/json'
+        header_parameters = {'Accept': 'application/json'}
         if custom_headers:
             header_parameters.update(custom_headers)
 
@@ -142,8 +139,7 @@ class AttachmentsOperations(object):
         deserialized = self._client.stream_download(response, callback)
 
         if raw:
-            client_raw_response = ClientRawResponse(deserialized, response)
-            return client_raw_response
+            return ClientRawResponse(deserialized, response)
 
         return deserialized
     get_attachment.metadata = {'url': '/v3/attachments/{attachmentId}/views/{viewId}'}

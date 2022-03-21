@@ -85,9 +85,8 @@ class WaterfallTests(aiounittest.AsyncTestCase):
             results = await dc.continue_dialog()
             if results.status == DialogTurnStatus.Empty:
                 await dc.begin_dialog('test')
-            else:
-                if results.status == DialogTurnStatus.Complete:
-                    await turn_context.send_activity(results.result)
+            elif results.status == DialogTurnStatus.Complete:
+                await turn_context.send_activity(results.result)
             await convo_state.save_changes(turn_context)
             
         adapt = TestAdapter(exec_test)

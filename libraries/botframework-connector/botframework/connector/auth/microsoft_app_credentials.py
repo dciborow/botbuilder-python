@@ -67,11 +67,15 @@ class MicrosoftAppCredentials(Authentication):
         self.microsoft_app_id = app_id
         # The configuration property for the Microsoft app Password.
         self.microsoft_app_password = password
-        tenant = (channel_auth_tenant if channel_auth_tenant is not None and len(channel_auth_tenant) > 0
-                  else Constants.DEFAULT_CHANNEL_AUTH_TENANT)
+        tenant = (
+            channel_auth_tenant
+            if channel_auth_tenant is not None and channel_auth_tenant != ''
+            else Constants.DEFAULT_CHANNEL_AUTH_TENANT
+        )
+
         self.oauth_endpoint = (Constants.TO_CHANNEL_FROM_BOT_LOGIN_URL_PREFIX + tenant +
                                Constants.TO_CHANNEL_FROM_BOT_TOKEN_ENDPOINT_PATH)
-        self.token_cache_key = app_id + '-cache'
+        self.token_cache_key = f'{app_id}-cache'
 
     def signed_session(self) -> requests.Session:
         """
@@ -96,23 +100,23 @@ class MicrosoftAppCredentials(Authentication):
                               a cached token if it exists.
         :returns: Access token string
         """
-        if self.microsoft_app_id and self.microsoft_app_password:
-            if not force_refresh:
-                # check the global cache for the token. If we have it, and it's valid, we're done.
-                oauth_token = MicrosoftAppCredentials.cache.get(self.token_cache_key, None)
-                if oauth_token is not None:
-                    # we have the token. Is it valid?
-                    if oauth_token.expiration_time > datetime.now():
-                        return oauth_token.access_token
-            # We need to refresh the token, because:
-            #   1. The user requested it via the force_refresh parameter
-            #   2. We have it, but it's expired
-            #   3. We don't have it in the cache.
-            oauth_token = await self.refresh_token()
-            MicrosoftAppCredentials.cache.setdefault(self.token_cache_key, oauth_token)
-            return oauth_token.access_token
-        else:
+        if not self.microsoft_app_id or not self.microsoft_app_password:
             return ''
+        if not force_refresh:
+            # check the global cache for the token. If we have it, and it's valid, we're done.
+            oauth_token = MicrosoftAppCredentials.cache.get(self.token_cache_key, None)
+            if (
+                oauth_token is not None
+                and oauth_token.expiration_time > datetime.now()
+            ):
+                return oauth_token.access_token
+        # We need to refresh the token, because:
+        #   1. The user requested it via the force_refresh parameter
+        #   2. We have it, but it's expired
+        #   3. We don't have it in the cache.
+        oauth_token = await self.refresh_token()
+        MicrosoftAppCredentials.cache.setdefault(self.token_cache_key, oauth_token)
+        return oauth_token.access_token
     async def refresh_token(self) -> _OAuthResponse:
         """
         returns: _OAuthResponse

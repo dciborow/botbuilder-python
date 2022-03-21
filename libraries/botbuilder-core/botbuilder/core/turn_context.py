@@ -85,7 +85,7 @@ class TurnContext(object):
 
     @responded.setter
     def responded(self, value: bool):
-        if value == False:
+        if not value:
             raise ValueError('TurnContext: cannot set TurnContext.responded to False.')
         else:
             self._responded = True
@@ -104,7 +104,7 @@ class TurnContext(object):
         try:
             return self._services[key]
         except KeyError:
-            raise KeyError('%s not found in TurnContext._services.' % key)
+            raise KeyError(f'{key} not found in TurnContext._services.')
 
     def has(self, key: str) -> bool:
         """
@@ -112,9 +112,7 @@ class TurnContext(object):
         :param key:
         :return:
         """
-        if key in self._services:
-            return True
-        return False
+        return key in self._services
 
     def set(self, key: str, value: object) -> None:
         """

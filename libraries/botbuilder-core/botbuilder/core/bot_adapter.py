@@ -80,11 +80,9 @@ class BotAdapter(ABC):
             try:
                 return await self._middleware.receive_activity_with_status(context, callback)
             except Exception as error:
-                if self.on_turn_error is not None:
-                    await self.on_turn_error(context, error)
-                else:
+                if self.on_turn_error is None:
                     raise error
-        else:
-            # callback to caller on proactive case
-            if callback is not None:
-                await callback(context)
+                else:
+                    await self.on_turn_error(context, error)
+        elif callback is not None:
+            await callback(context)
